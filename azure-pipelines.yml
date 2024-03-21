@@ -33,7 +33,7 @@ stages:
 
           - script:
               mkdir $(Build.ArtifactStagingDirectory)\\dist |
-              xcopy "$(System.DefaultWorkingDirectory)\\dist\\react-chess" $(Build.ArtifactStagingDirectory)\\dist /E/H/C
+              xcopy "$(System.DefaultWorkingDirectory)\\dist" $(Build.ArtifactStagingDirectory)\\dist /E/H/C
             displayName: "Copy Dist Contents"
 
           - task: PublishBuildArtifacts@1
