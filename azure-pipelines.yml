@@ -1,0 +1,67 @@
+trigger:
+  branches:
+    include:
+      - main
+
+stages:
+  - stage: Build
+    pool:
+      vmImage: "windows-latest"
+    jobs:
+      - job: Build
+        displayName: "PGS-V2 React-Chess App Build"
+        workspace:
+          clean: all
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "20.x"
+            displayName: "Install Node.js"
+
+          - task: Npm@1
+            inputs:
+              command: "install"
+              workingDir: "$(System.DefaultWorkingDirectory)"
+            displayName: "Npm Install"
+
+          - task: Npm@1
+            inputs:
+              command: "custom"
+              customCommand: "run build:webpack"
+              workingDir: "$(System.DefaultWorkingDirectory)"
+            displayName: "Build PGS-V2 React-Chess app"
+
+          - script:
+              mkdir $(Build.ArtifactStagingDirectory)\\dist |
+              xcopy "$(System.DefaultWorkingDirectory)\\dist\\react-chess" $(Build.ArtifactStagingDirectory)\\dist /E/H/C
+            displayName: "Copy Dist Contents"
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish Artifact"
+
+  - stage: Deploy
+    dependsOn: Build
+    condition: succeeded('Build')
+    variables:
+      - group: SECRET-DEV
+      - group: VGRP-PGS-V2
+      - group: VGRP-REACT-CHESS
+    pool:
+      vmImage: "windows-latest"
+    jobs:
+      - deployment: Deploy
+        displayName: "Deploy to Azure"
+        environment: PROD
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: AzureCLI@2
+                  displayName: "Deploy PGS-V2 React-Chess App"
+                  inputs:
+                    azureSubscription: $(azureSubscription)
+                    scriptType: batch
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      az storage blob upload-batch --overwrite -d $(containerName) --account-name $(storageAccount) --account-key $(accountKey) -s "$(Agent.BuildDirectory)\\drop\\dist"
+
