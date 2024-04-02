@@ -82,14 +82,13 @@ const ChessboardWrapper = forwardRef((props, ref) => {
       if (!playingAdvancedGame) {
         playingAdvancedGame = !playingAdvancedGame;
         game = new Chess();
-        //const { validate_fen: validateFen } = game;
         let result = validateFen(data.fen);
 
-        if (data.fen && result.valid) {
-          chessboardRef.current.setPosition(data.fen);
+        if (data.fen && result.ok) {
+          chessboardRef.current.setPosition(data.fen, false);
           game.load(data.fen);
         } else {
-          chessboardRef.current.start();
+          chessboardRef.current.start(false);
         }
         setOrientation(data.orientation);
         if (data.selfPlay) {
@@ -105,7 +104,7 @@ const ChessboardWrapper = forwardRef((props, ref) => {
     },
     quickStartGame: () => {
       game = new Chess();
-      chessboardRef.current.start();
+      chessboardRef.current.start(false);
       addEventListeners();
     },
   }));
