@@ -1,0 +1,21 @@
+#reactSecondaryHeader {
+  background-image: url("./../assets/board-background.png");
+}
+
+#advancedConfigStartGameBtn,
+#closeAdvancedConfigModalBtn {
+  margin: 0.25rem;
+}
+
+#reactChessBoard {
+  max-width: 900px;
+  margin: auto;
+}
+
+#chessBoardBackground {
+  background-image: url("./../assets/board-background.png");
+}
+
+.form-check {
+  padding-top: 0.4rem;
+}

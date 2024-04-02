@@ -43,8 +43,12 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "chess.js": "^1.0.0-beta.8",
+    "chessboard-element": "^1.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-modal": "^3.16.1",
+    "reactjs-eventemitter": "^1.0.6",
     "single-spa-react": "^4.3.1"
   }
 }
