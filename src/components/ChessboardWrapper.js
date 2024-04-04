@@ -6,6 +6,7 @@ import React, {
 } from "react";
 import "chessboard-element";
 import { Chess, validateFen } from "chess.js";
+import { getNextMove } from "../services/chessMoveService";
 
 const ChessboardWrapper = forwardRef((props, ref) => {
   const chessboardRef = useRef();
@@ -20,15 +21,8 @@ const ChessboardWrapper = forwardRef((props, ref) => {
       clearInterval(randomMoveInterval);
       return;
     }
-    const request = await fetch("https://polyglot-spa-test.azurewebsites.net", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ gameFen: game.fen() }),
-    });
-    const move = await request.json();
-    const [from, to] = Object.entries(move)[0];
+    const nextMove = await getNextMove({ gameFen: game.fen() });
+    const [from, to] = Object.entries(nextMove)[0];
     game.move({
       from: from.toLowerCase(),
       to: to.toLowerCase(),
